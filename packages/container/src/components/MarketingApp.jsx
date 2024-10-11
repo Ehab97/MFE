@@ -6,7 +6,7 @@ const MarketingApp = () => {
   useEffect(() => {
     mount(ref.current);
   }, []);
-  return <div ref={ref}>MarketingApp</div>;
+  return <div ref={ref} />;
 };
 
 export default MarketingApp;
