@@ -2,26 +2,29 @@ name: deploy-container
 
 on:
   push:
-    branch:
+    branches:
       - main
     paths:
       - "packages/container/**"
-
-default:
-  run:
-    working-directory: packages/container
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: action/checkout@v2
-      - run: npm install
-      - run: npm run build
+      - uses: actions/checkout@v2
 
+      # Set working directory for npm install and build
+      - run: npm install
+        working-directory: packages/container
+
+      - run: npm run build
+        working-directory: packages/container
+
+      # Sync the dist folder to the S3 bucket
       - uses: shinyinc/action-aws-cli@v1.2
       - run: aws s3 sync dist s3://${{ secrets.AWS_S3_BUCKET_NAME }}/container/latest
+        working-directory: packages/container
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
